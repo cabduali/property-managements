@@ -14,11 +14,11 @@ import Tenant from './pages/Tenants';
 import AddTenantForm from './components/Tenants/AddTenantForm';
 import Contractor from './pages/Contractor';
 import AddContractor from './components/contractor/AddContractor';
-import EditContractorForm from './components/contractor/EditPropertyForm'; // Correct import
+import EditContractorForm from './components/contractor/EditCotractorForm'; // Correct import
 import Maintenance from './pages/maintenance';
 import MaintenanceRequestForm from './components/Maintenance/Addmaintenance';
-import EditMaintenanceRequestForm from './components/Maintenance/EditPropertyForm';
-
+import EditMaintenanceRequestForm from './components/Maintenance/Editmaintenance';
+import AssignContractorForm from './components/Maintenance/AssignContractorForm';
 function App() {
   return (
     <Routes>
@@ -40,7 +40,8 @@ function App() {
         <Route path='/EditContractor/:id' element={<EditContractorForm/>} /> 
         <Route path='/maintenace' element={<Maintenance/>}/>
         <Route path='/AddMaintenance' element={<MaintenanceRequestForm/>} />
-        <Route path='EditMaintenance' element={<EditMaintenanceRequestForm/>}/> 
+        <Route path='/EditMaintenance' element={<EditMaintenanceRequestForm/>}/> 
+        <Route path="/AssignContractor/:id" element={<AssignContractorForm />} />
       </Route>
     </Routes>
   );

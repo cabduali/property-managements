@@ -10,30 +10,31 @@ export function EditContractorForm() {
     skills: '',
     available: true,
   });
+  const [loading, setLoading] = useState(true); // Loading state
   const navigate = useNavigate();
-  const { id } = useParams(); // Get the contractor ID from the URL
+  const { id } = useParams();
 
-  // Fetch existing contractor details
   useEffect(() => {
     if (id) {
-      axios.get(`http://localhost:3000/api/contractor/${id}`)
+      axios.get(`http://localhost:3000/api/contractors/${id}`)
         .then(response => {
           const data = response.data;
           setFormState({
-            name: data.name,
-            email: data.email,
-            phone: data.phone,
-            skills: data.skills.join(', '), // Convert skills array to comma-separated string
-            available: data.available,
+            name: data.data.name,
+            email: data.data.email,
+            phone: data.data.phone,
+            skills: data.data.skills ? data.data.skills.join(', ') : '', // Handle skills array
+            available: data.data.available || false,
           });
+          setLoading(false); // Set loading to false after data is fetched
         })
         .catch(error => {
           console.error('Error fetching contractor:', error);
+          setLoading(false); 
         });
     }
   }, [id]);
-
-  // Handle input changes
+console.log(formState.name)
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormState((prevState) => ({
@@ -42,24 +43,24 @@ export function EditContractorForm() {
     }));
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      // Update contractor data
-      await axios.put(`http://localhost:3000/api/contractor/${id}`, {
+      await axios.put(`http://localhost:3000/api/contractors/${id}`, {
         ...formState,
-        skills: formState.skills.split(',').map(skill => skill.trim()), // Convert skills string back to an array
+        skills: formState.skills.split(',').map(skill => skill.trim()), // Convert skills string back to array
       });
-      
       alert('Contractor updated successfully');
-      navigate('/contractors'); // Redirect to contractor list page
+      navigate('/Contractor');
     } catch (error) {
       console.error('Error updating contractor:', error);
       alert('Failed to update contractor.');
     }
   };
+
+  if (loading) {
+    return <p>Loading contractor details...</p>; // Display loading message while data is being fetched
+  }
 
   return (
     <section className="py-10 bg-gray-50 sm:py-16 lg:py-24">
@@ -74,6 +75,7 @@ export function EditContractorForm() {
           <div className="overflow-hidden bg-white rounded-md shadow-md">
             <div className="px-4 py-6 sm:px-8 sm:py-7">
               <form onSubmit={handleSubmit} method="POST">
+                
                 {/* Name */}
                 <div className="mb-5">
                   <label className="text-base font-medium text-gray-900">Name</label>

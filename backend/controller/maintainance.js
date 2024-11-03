@@ -5,6 +5,7 @@ export const createMaintenanceRequest = async (req, res) => {
     try {
         const { tenantId, propertyId, description, priority } = req.body;
 
+        // Create new maintenance request
         const newRequest = new MaintenanceRequest({
             tenantId,
             propertyId,
@@ -19,17 +20,18 @@ export const createMaintenanceRequest = async (req, res) => {
     }
 };
 
-// Assign a contractor to a maintenance request (Admin only)
 export const assignContractorToRequest = async (req, res) => {
     try {
         const { id } = req.params; 
         const { contractorId, assignmentDate } = req.body;
 
+        // Find the maintenance request by ID
         const maintenanceRequest = await MaintenanceRequest.findById(id);
         if (!maintenanceRequest) {
             return res.status(404).json({ message: 'Maintenance request not found' });
         }
 
+        // Update contractor details, regardless of current assignment
         maintenanceRequest.contractorId = contractorId;
         maintenanceRequest.assignmentDate = assignmentDate || new Date();
         maintenanceRequest.status = 'In Progress';
@@ -41,30 +43,20 @@ export const assignContractorToRequest = async (req, res) => {
     }
 };
 
-// Update the status of a maintenance request (Admin only)
-export const updateMaintenanceRequestStatus = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body;
 
-        const maintenanceRequest = await MaintenanceRequest.findById(id);
-        if (!maintenanceRequest) {
+export const updateMaintenanceRequest = async (req, res) => {
+    try {
+        const updatedRequest = await MaintenanceRequest.findByIdAndUpdate(req.params.id, req.body, { new: true });
+        if (!updatedRequest) {
             return res.status(404).json({ message: 'Maintenance request not found' });
         }
-
-        maintenanceRequest.status = status;
-
-        // If status is completed, record completion date
-        if (status === 'Completed') {
-            maintenanceRequest.completionDate = new Date();
-        }
-
-        await maintenanceRequest.save();
-        res.status(200).json({ message: 'Maintenance request status updated successfully', data: maintenanceRequest });
+        res.status(200).json({ message: 'Maintenance request updated successfully', data: updatedRequest });
     } catch (error) {
-        res.status(500).json({ message: 'Failed to update maintenance request status', error: error.message });
+        res.status(500).json({ message: 'Failed to update maintenance request', error: error.message });
     }
 };
+
+// Other existing functions: ass
 
 // Get all maintenance requests (Admin only)
 export const getAllMaintenanceRequests = async (req, res) => {
@@ -79,3 +71,33 @@ export const getAllMaintenanceRequests = async (req, res) => {
         res.status(500).json({ message: 'Failed to retrieve maintenance requests', error: error.message });
     }
 };
+
+// Delete a maintenance request by ID
+export const deleteMaintenanceRequest = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Find and delete the maintenance request by ID
+        const deletedRequest = await MaintenanceRequest.findByIdAndDelete(id);
+        if (!deletedRequest) {
+            return res.status(404).json({ message: 'Maintenance request not found' });
+        }
+
+        res.status(200).json({ message: 'Maintenance request deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to delete maintenance request', error: error.message });
+    }
+};
+
+export const getMaintenanceRequestById = async (req, res) => {
+    try {
+      const maintenanceRequest = await MaintenanceRequest.findById(req.params.id);
+      if (!maintenanceRequest) {
+        return res.status(404).json({ message: 'Maintenance request not found' });
+      }
+      res.status(200).json({ data: maintenanceRequest });
+    } catch (error) {
+      res.status(500).json({ message: 'Error fetching maintenance request' });
+    }
+  };
+  

@@ -25,7 +25,7 @@ export function AddContractor() {
       });
 
       alert('Contractor added successfully');
-      navigate('/AddContractor'); // Redirect to contractors list or dashboard after adding
+      navigate('/Contractor'); // Redirect to contractors list or dashboard after adding
     } catch (error) {
       console.error('Error adding contractor:', error);
       alert('There was an error adding the contractor. Please try again.');

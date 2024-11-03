@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-export function MaintenanceRequestForm() {
+export function AddMaintenanceModal() {
   const [formData, setFormData] = useState({
     tenantId: '',
     propertyId: '',
@@ -11,24 +11,24 @@ export function MaintenanceRequestForm() {
     contractorId: '',
   });
   const [tenants, setTenants] = useState([]);
-  const [properties, setProperties] = useState([]);
-  const [contractors, setContractors] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Fetch tenants, properties, and contractors for the form
     const fetchData = async () => {
       try {
         const tenantResponse = await axios.get('http://localhost:3000/api/tenants');
-        const propertyResponse = await axios.get('http://localhost:3000/api/properties');
         const contractorResponse = await axios.get('http://localhost:3000/api/contractors');
-        
-      
-    
-        setTenants(tenantResponse.data.data || []);
-        setProperties(propertyResponse.data.data || []);
-        setContractors(contractorResponse.data.data || []);
+
+        // Check and log API responses
+        console.log("Tenant Response:", tenantResponse.data);
+        console.log("Contractor Response:", contractorResponse.data);
+
+        setTenants(tenantResponse.data || []);
+
+        // Adjust the contractor data setting depending on the API response structure
+        setContractors(contractorResponse.data.data || contractorResponse.data || []);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -36,6 +36,20 @@ export function MaintenanceRequestForm() {
 
     fetchData();
   }, []);
+
+  const handleTenantChange = (e) => {
+    const tenantId = e.target.value;
+    const selectedTenant = tenants.find((tenant) => tenant._id === tenantId);
+    const associatedPropertyId = selectedTenant?.property?._id || '';
+    const associatedPropertyName = selectedTenant?.property?.name || 'Select Property';
+
+    setFormData((prevData) => ({
+      ...prevData,
+      tenantId,
+      propertyId: associatedPropertyId,
+      propertyName: associatedPropertyName,
+    }));
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,7 +69,7 @@ export function MaintenanceRequestForm() {
       });
 
       alert('Maintenance request submitted successfully');
-      navigate('/maintenance');
+      navigate('/maintenace');
     } catch (error) {
       console.error('Error submitting maintenance request:', error);
       alert('There was an error submitting the maintenance request. Please try again.');
@@ -83,7 +97,7 @@ export function MaintenanceRequestForm() {
                   <select
                     name="tenantId"
                     value={formData.tenantId}
-                    onChange={handleInputChange}
+                    onChange={handleTenantChange}
                     className="block w-full py-3 px-4 text-black bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600"
                     required
                   >
@@ -96,37 +110,18 @@ export function MaintenanceRequestForm() {
                   </select>
                 </div>
 
-                {/* Property Selection */}
-                <div className="mb-5">
+                {/* Display Property Name as Read-Only */}
+                {/* <div className="mb-5">
                   <label className="text-base font-medium text-gray-900">Property</label>
-                  <select
-                    name="propertyId"
-                    value={formData.propertyId}
-                    onChange={handleInputChange}
-                    className="block w-full py-3 px-4 text-black bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600"
-                    required
-                  >
-                    <option value="">Select Property</option>
-                    {properties.map((property) => (
-                      <option key={property._id} value={property._id}>
-                        {property.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Description */}
-                <div className="mb-5">
-                  <label className="text-base font-medium text-gray-900">Description</label>
-                  <textarea
-                    name="description"
-                    value={formData.description}
-                    onChange={handleInputChange}
-                    placeholder="Describe the maintenance issue"
-                    className="block w-full py-3 px-4 text-black bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600"
-                    required
+                  <input
+                    type="text"
+                    name="propertyName"
+                    value={formData.propertyName || 'Select Property'}
+                    readOnly
+                    className="block w-full py-3 px-4 text-black bg-gray-100 border border-gray-200 rounded-md focus:outline-none focus:border-blue-600"
+                    placeholder="Property Name"
                   />
-                </div>
+                </div> */}
 
                 {/* Priority Selection */}
                 <div className="mb-5">
@@ -144,22 +139,19 @@ export function MaintenanceRequestForm() {
                   </select>
                 </div>
 
-                {/* Contractor Selection */}
+             
+
+                {/* Description */}
                 <div className="mb-5">
-                  <label className="text-base font-medium text-gray-900">Contractor</label>
-                  <select
-                    name="contractorId"
-                    value={formData.contractorId}
+                  <label className="text-base font-medium text-gray-900">Description</label>
+                  <textarea
+                    name="description"
+                    value={formData.description}
                     onChange={handleInputChange}
+                    placeholder="Describe the maintenance issue"
                     className="block w-full py-3 px-4 text-black bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600"
-                  >
-                    <option value="">Select Contractor </option>
-                    {contractors.map((contractor) => (
-                      <option key={contractor._id} value={contractor._id}>
-                        {contractor.name}
-                      </option>
-                    ))}
-                  </select>
+                    required
+                  />
                 </div>
 
                 <div className="mt-6">
@@ -180,4 +172,4 @@ export function MaintenanceRequestForm() {
   );
 }
 
-export default MaintenanceRequestForm;
+export default AddMaintenanceModal;

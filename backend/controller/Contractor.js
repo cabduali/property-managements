@@ -46,7 +46,7 @@ export const getContractorById = async (req, res) => {
     }
 };
 
-// Update a contractor by ID
+// Update a contractor by ID-+
 export const updateContractor = async (req, res) => {
     try {
         const { id } = req.params;

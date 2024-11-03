@@ -47,7 +47,7 @@ const ContractorTableWithActions = () => {
     if (!isConfirmed) return;
 
     try {
-      await axios.delete(`http://localhost:3000/api/contractor/${id}`);
+      await axios.delete(`http://localhost:3000/api/contractors/${id}`);
       alert('Contractor deleted successfully');
 
       setContractors((prevContractors) =>
