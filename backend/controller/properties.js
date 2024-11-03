@@ -4,7 +4,7 @@ import cloudinary from 'cloudinary';
 // Create a new Property
 export const createProperty = async (req, res) => {
   try {
-    const { name, description, location, square_footage, bedrooms, bathrooms, features, image_url, type, city, neighborhood, isRented } = req.body;
+    const { name, description, location, square_footage, bedrooms, bathrooms, features, image_url, type, rent_type,city, neighborhood, isRented } = req.body;
 
     const newProperty = new Property({
       name,
@@ -17,6 +17,7 @@ export const createProperty = async (req, res) => {
       image_url,
       type,
       city,
+      rent_type,
       neighborhood,
       isRented: isRented || false,
     });
@@ -40,18 +41,17 @@ export const uploadImage = async (req, res) => {
   }
 };
 
+// Get properties with optional filters
 export const getProperties = async (req, res) => {
   try {
-    const properties = await Property.find({}); 
-    res.status(200).json(properties);
-  } catch (error) {
-    console.error('Error fetching properties:', error);
-    res.status(500).json({ message: 'Server error', error });
-  }
-};
-export const getRentedProperties = async (req, res) => {
-  try {
-    const properties = await Property.find({isRented:false}); 
+    const { type, city, neighborhood } = req.query;
+    const filter = {};
+
+    if (type) filter.type = type;
+    if (city) filter.city = city;
+    if (neighborhood) filter.neighborhood = neighborhood;
+
+    const properties = await Property.find(filter); 
     res.status(200).json(properties);
   } catch (error) {
     console.error('Error fetching properties:', error);
@@ -59,6 +59,15 @@ export const getRentedProperties = async (req, res) => {
   }
 };
 
+export const getRentedProperties = async (req, res) => {
+  try {
+    const properties = await Property.find({ isRented: false }); 
+    res.status(200).json(properties);
+  } catch (error) {
+    console.error('Error fetching properties:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
 
 // Get property by ID
 export const getPropertyById = async (req, res) => {

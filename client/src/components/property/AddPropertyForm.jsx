@@ -12,9 +12,10 @@ export function AddPropertyForm() {
   const [features, setFeatures] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [type, setType] = useState('House');
+  const [rent_type, setrent_type] = useState('month');
   const [city, setCity] = useState('');
   const [neighborhood, setNeighborhood] = useState('');
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   // Upload image to Cloudinary
@@ -22,7 +23,7 @@ export function AddPropertyForm() {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'ml_default'); // Replace 'ml_default' with your actual Cloudinary upload preset
-  
+
     try {
       const response = await axios.post('https://api.cloudinary.com/v1_1/dezn9ks7m/image/upload', formData);
       return response.data.secure_url; // Returns the URL of the uploaded image
@@ -31,7 +32,7 @@ export function AddPropertyForm() {
       throw error;
     }
   };
-  
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -54,6 +55,7 @@ export function AddPropertyForm() {
         image_url: imageUrl,
         type,
         city,
+        rent_type,
         neighborhood,
       });
 
@@ -180,6 +182,22 @@ export function AddPropertyForm() {
                     className="block w-full py-3 px-4 text-black bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600"
                     required
                   />
+                </div>
+                {/* rent-type */}
+                <div>
+                  <label className="text-base font-medium text-gray-900">Type</label>
+                  <select
+                    value={rent_type}
+                    onChange={(e) => setrent_type(e.target.value)}
+                    className="block w-full py-3 px-4 text-black bg-white border border-gray-200 rounded-md focus:outline-none focus:border-blue-600"
+                    required
+                  >
+                    <option value="month">1-month</option>
+                    <option value="3-month">3-month</option>
+                    <option value="6-month">6-month</option>
+                    <option value="9-month">9-month</option>
+                    <option value="yearly">1-year</option>
+                  </select>
                 </div>
 
                 {/* Type */}

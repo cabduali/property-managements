@@ -93,7 +93,7 @@ const TableWithActions = () => {
               Bedrooms
             </th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Bathrooms
+            rent_type
             </th>
             <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Type
@@ -123,7 +123,7 @@ const TableWithActions = () => {
               <td className="px-4 py-2">{property.location}</td>
               <td className="px-4 py-2">{property.square_footage}</td>
               <td className="px-4 py-2">{property.bedrooms}</td>
-              <td className="px-4 py-2">{property.bathrooms}</td>
+              <td className="px-4 py-2">{property.rent_type}</td>
               <td className="px-4 py-2">{property.type}</td>
               <td className="px-4 py-2">{property.city}</td>
               <td className="px-4 py-2">
