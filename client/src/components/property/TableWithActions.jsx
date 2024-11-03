@@ -4,14 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 const TableWithActions = () => {
   const [properties, setProperties] = useState([]);
+  const [searchTerm, setSearchTerm] = useState(''); // State for search term
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const response = await axios.get('http://localhost:3000/api/properties');
-        console.log('Fetched Properties:', response.data); // Log the response data
-        setProperties(response.data); // Set all properties without filtering
+        console.log('Fetched Properties:', response.data);
+        setProperties(response.data);
       } catch (error) {
         console.error('Error fetching properties:', error);
       }
@@ -46,10 +47,25 @@ const TableWithActions = () => {
     }
   };
 
+  // Filter properties based on search term
+  const filteredProperties = properties.filter(property =>
+    property.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    property.city.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="bg-white rounded-lg shadow-md p-4">
-      <div className="flex justify-between mb-4">
+      <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-semibold">Property List</h2>
+        <input
+          type="text"
+          placeholder="Search by name, location, type, or city"
+          className="border px-4 py-2 rounded-md"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
           onClick={handleAddNew}
@@ -94,7 +110,7 @@ const TableWithActions = () => {
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {properties.map((property) => (
+          {filteredProperties.map((property) => (
             <tr key={property._id}>
               <td className="px-4 py-2">
                 <img

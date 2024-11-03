@@ -11,7 +11,6 @@ import EditPropertyForm from './components/property/EditPropertyForm';
 
 import { EditTenantForm } from './components/Tenants/EditPropertyForm';
 import Tenant from './pages/Tenants';
-import AddTenantForm from './components/Tenants/AddTenantForm';
 import Contractor from './pages/Contractor';
 import AddContractor from './components/contractor/AddContractor';
 import EditContractorForm from './components/contractor/EditCotractorForm'; // Correct import
@@ -19,6 +18,7 @@ import Maintenance from './pages/maintenance';
 import MaintenanceRequestForm from './components/Maintenance/Addmaintenance';
 import EditMaintenanceRequestForm from './components/Maintenance/Editmaintenance';
 import AssignContractorForm from './components/Maintenance/AssignContractorForm';
+import AddTenant from './components/Tenants/AddTenantForm';
 function App() {
   return (
     <Routes>
@@ -32,7 +32,7 @@ function App() {
         <Route path="/property" element={<Property />} />
         <Route path="/AddPropertyForm" element={<AddPropertyForm />} />
         <Route path="/EditPropertyForm/:id" element={<EditPropertyForm />} />
-        <Route path="/AddTenantForm" element={<AddTenantForm />} />
+        <Route path="/AddTenant" element={<AddTenant />} />
         <Route path="/EditTenantForm/:id" element={<EditTenantForm />} />
         <Route path="/tenants" element={<Tenant />} />
         <Route path='/Contractor' element={<Contractor/>} />

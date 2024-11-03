@@ -20,7 +20,7 @@ const TableWithActions = () => {
   }, []);
 
   const handleAddNew = () => {
-    navigate("/AddTenantForm");
+    navigate("/AddTenant");
   };
 
   const handleEditClick = (tenant) => {

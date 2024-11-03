@@ -1,37 +1,76 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiTrendingDown, FiTrendingUp } from "react-icons/fi";
 
 const StatCards = () => {
+  const [stats, setStats] = useState({
+    totalTenants: 0,
+    totalProperties: 0,
+    totalRentedProperties: 0,
+    totalMaintenanceRequests: 0,
+    completedMaintenanceTasks: 0,
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/dashboard");
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log("Fetched data:", data);
+
+        setStats({
+          totalTenants: data.totalTenants,
+          totalProperties: data.totalProperties,
+          totalRentedProperties: data.totalRentedProperties,
+          totalMaintenanceRequests: data.totalMaintenanceRequests,
+          completedMaintenanceTasks: data.completedMaintenanceTasks,
+        });
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <>
       <Card
-        title="Gross Revenue"
-        value="$120,054.24"
-        pillText="2.75%"
+        title="Total Tenants"
+        value={stats.totalTenants}
+        pillText="5.24%"
         trend="up"
-        period="From Jan 1st - Jul 31st"
+        period="Current Active Tenants"
       />
       <Card
-        title="Avg Order"
-        value="$27.97"
+        title="Total Properties"
+        value={stats.totalProperties}
         pillText="1.01%"
         trend="down"
         period="From Jan 1st - Jul 31st"
       />
       <Card
-        title="Trailing Year"
-        value="$278,054.24"
-        pillText="60.75%"
+        title="Total Rented Properties"
+        value={stats.totalRentedProperties}
+        pillText="2.75%"
         trend="up"
-        period="Previous 365 days"
+        period="Properties Rented"
       />
-      {/* New Tenants Card */}
       <Card
-        title="Number of Tenants"
-        value="128"
-        pillText="5.24%"
+        title="Total Maintenance Requests"
+        value={stats.totalMaintenanceRequests}
+        pillText="4.50%"
         trend="up"
-        period="Current Active Tenants"
+        period="Current Month"
+      />
+      <Card
+        title="Completed Maintenance Tasks"
+        value={stats.completedMaintenanceTasks}
+        pillText="6.25%"
+        trend="up"
+        period="Current Month"
       />
     </>
   );
